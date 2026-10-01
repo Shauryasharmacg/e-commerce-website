@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger-color: #ef4444;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--text-main);
+        }
+
+        .cart-count {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Cart Layout */
+        .cart-items-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cart-item {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 2;
+        }
+
+        .item-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .item-details h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .item-price {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Quantity Bar Controls */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fafafa;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-main);
+            transition: background 0.2s;
+        }
+
+        .qty-btn:hover {
+            background-color: var(--border-color);
+        }
+
+        .qty-input {
+            width: 40px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        /* Actions Section */
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .item-total {
+            font-weight: 600;
+            font-size: 1.05rem;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        /* 'Buy it' Button linking to checkout page */
+        .buy-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .buy-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .buy-btn:active {
+            transform: scale(0.97);
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            text-decoration: underline;
+        }
+
+        /* Empty Cart State */
+        .empty-cart {
+            text-align: center;
+            padding: 50px 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-cart h2 {
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .empty-cart p {
+            color: var(--text-muted);
+        }
+
+        /* Cart Summary Footer */
+        .cart-summary {
+            margin-top: 24px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-total {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .checkout-all-btn {
+            background-color: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .checkout-all-btn:hover {
+            background-color: #059669;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .item-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .cart-summary {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Shopping Cart</h1>
+            <span class="cart-count" id="cartCount">3 items</span>
+        </header>
+
+        <!-- Cart Items List -->
+        <div class="cart-items-container" id="cartItemsContainer">
+            <!-- Item 1 -->
+            <div class="cart-item" data-id="1" data-price="299.99">
+                <div class="item-info">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=150&auto=format&fit=crop&q=80" alt="Wireless Headphones" class="item-img">
+                    <div class="item-details">
+                        <h3>Wireless Headphones</h3>
+                        <div class="item-price">$299.99</div>
+                        <button class="remove-btn" onclick="removeItem(1)">Remove</button>
+                    </div>
+                </div>
+
+                <!-- Quantity Bar -->
+                <div class="quantity-control">
+                    <button class="qty-btn" onclick="updateQuantity(1, -1)">-</button>
+                    <input type="text" class="qty-input" value="1" readonly id="qty-1">
+                    <button class="qty-btn" onclick="updateQuantity(1, 1)">+</button>
+                </div>
+
+                <div class="item-actions">
+                    <div class="item-total" id="total-1">$299.99</div>
+                    <!-- 'Buy it' button linking to checkout page for this specific product -->
+                    <a href="checkout.html?product_id=1&qty=1" class="buy-btn" id="buy-btn-1">Buy it</a>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="cart-item" data-id="2" data-price="49.50">
+                <div class="item-info">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&auto=format&fit=crop&q=80" alt="Minimalist Watch" class="item-img">
+                    <div class="item-details">
+                        <h3>Minimalist Watch</h3>
+                        <div class="item-price">$49.50</div>
+                        <button class="remove-btn" onclick="removeItem(2)">Remove</button>
+                    </div>
+                </div>
+
+                <!-- Quantity Bar -->
+                <div class="quantity-control">
+                    <button class="qty-btn" onclick="updateQuantity(2, -1)">-</button>
+                    <input type="text" class="qty-input" value="2" readonly id="qty-2">
+                    <button class="qty-btn" onclick="updateQuantity(2, 1)">+</button>
+                </div>
+
+                <div class="item-actions">
+                    <div class="item-total" id="total-2">$99.00</div>
+                    <!-- 'Buy it' button linking to checkout page for this specific product -->
+                    <a href="checkout.html?product_id=2&qty=2" class="buy-btn" id="buy-btn-2">Buy it</a>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="cart-item" data-id="3" data-price="19.99">
+                <div class="item-info">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=150&auto=format&fit=crop&q=80" alt="Running Sneakers" class="item-img">
+                    <div class="item-details">
+                        <h3>Running Sneakers</h3>
+                        <div class="item-price">$19.99</div>
+                        <button class="remove-btn" onclick="removeItem(3)">Remove</button>
+                    </div>
+                </div>
+
+                <!-- Quantity Bar -->
+                <div class="quantity-control">
+                    <button class="qty-btn" onclick="updateQuantity(3, -1)">-</button>
+                    <input type="text" class="qty-input" value="1" readonly id="qty-3">
+                    <button class="qty-btn" onclick="updateQuantity(3, 1)">+</button>
+                </div>
+
+                <div class="item-actions">
+                    <div class="item-total" id="total-3">$19.99</div>
+                    <!-- 'Buy it' button linking to checkout page for this specific product -->
+                    <a href="checkout.html?product_id=3&qty=1" class="buy-btn" id="buy-btn-3">Buy it</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Summary / Total -->
+        <div class="cart-summary" id="cartSummary">
+            <div class="summary-total">Total: <span id="cartGrandTotal">$418.98</span></div>
+            <a href="checkout.html?cart=all" class="checkout-all-btn">Proceed to Checkout (All Items)</a>
+        </div>
+    </div>
+
+    <script>
+        // Function to update item quantity and dynamic calculations
+        function updateQuantity(id, change) {
+            const qtyInput = document.getElementById(`qty-${id}`);
+            let currentQty = parseInt(qtyInput.value);
+            
+            currentQty += change;
+            if (currentQty < 1) currentQty = 1; // Minimum quantity is 1
+            
+            qtyInput.value = currentQty;
+
+            // Find parent item element to get its price
+            const itemElement = document.querySelector(`.cart-item[data-id="${id}"]`);
+            const price = parseFloat(itemElement.getAttribute('data-price'));
+
+            // Update item total price display
+            const itemTotal = price * currentQty;
+            document.getElementById(`total-${id}`).innerText = `$${itemTotal.toFixed(2)}`;
+
+            // Update individual 'Buy it' button link query parameters to match the current quantity
+            const buyBtn = document.getElementById(`buy-btn-${id}`);
+            buyBtn.href = `checkout.html?product_id=${id}&qty=${currentQty}`;
+
+            // Recalculate cart grand total
+            updateGrandTotal();
+        }
+
+        // Function to remove item from the cart
+        function removeItem(id) {
+            const itemElement = document.querySelector(`.cart-item[data-id="${id}"]`);
+            if (itemElement) {
+                itemElement.remove();
+                updateCartCount();
+                updateGrandTotal();
+                checkEmptyCart();
+            }
+        }
+
+        // Function to calculate and display the grand total of the cart
+        function updateGrandTotal() {
+            let grandTotal = 0;
+            const totals = document.querySelectorAll('.item-total');
+            totals.forEach(totalElem => {
+                grandTotal += parseFloat(totalElem.innerText.replace('$', ''));
+            });
+            document.getElementById('cartGrandTotal').innerText = `$${grandTotal.toFixed(2)}`;
+        }
+
+        // Update overall cart item count badge
+        function updateCartCount() {
+            const remainingItems = document.querySelectorAll('.cart-item').length;
+            const countBadge = document.getElementById('cartCount');
+            countBadge.innerText = `${remainingItems} item${remainingItems === 1 ? '' : 's'}`;
+        }
+
+        // Show empty cart view if all items are removed
+        function checkEmptyCart() {
+            const remainingItems = document.querySelectorAll('.cart-item').length;
+            if (remainingItems === 0) {
+                document.getElementById('cartItemsContainer').innerHTML = `
+                    <div class="empty-cart">
+                        <h2>Your Cart is Empty</h2>
+                        <p>Looks like you haven't added anything to your cart yet.</p>
+                    </div>
+                `;
+                document.getElementById('cartSummary').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
