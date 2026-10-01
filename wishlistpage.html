@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart & Checkout</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 40px 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        header {
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        /* Responsive Table */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        thead th {
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        tbody td {
+            padding: 18px 16px;
+            vertical-align: middle;
+        }
+
+        .product-meta .item-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: block;
+        }
+
+        .product-meta .item-sku {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .price {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1rem;
+        }
+
+        /* Quantity input field */
+        .qty-input {
+            width: 70px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .qty-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        /* Footer & Actions */
+        .cart-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 16px;
+            padding-top: 16px;
+        }
+
+        .checkout-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--primary);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .checkout-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .checkout-btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            .cart-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .checkout-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Your Shopping Cart</h1>
+            <p>Review items, select quantities, and proceed to checkout.</p>
+        </header>
+
+        <form action="/checkout" method="POST">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Product Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="product-meta">
+                                <span class="item-title">Wireless Noise-Canceling Headphones</span>
+                                <span class="item-sku">SKU: WH-1000XM</span>
+                            </td>
+                            <td class="price">₹4,999</td>
+                            <td>
+                                <input 
+                                    class="qty-input"
+                                    type="number" 
+                                    name="qty_headphones" 
+                                    min="0" 
+                                    max="10" 
+                                    value="1" 
+                                    aria-label="Quantity of Wireless Headphones">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="product-meta">
+                                <span class="item-title">Mechanical Gaming Keyboard</span>
+                                <span class="item-sku">SKU: KB-RGB-87</span>
+                            </td>
+                            <td class="price">₹2,499</td>
+                            <td>
+                                <input 
+                                    class="qty-input"
+                                    type="number" 
+                                    name="qty_keyboard" 
+                                    min="0" 
+                                    max="10" 
+                                    value="1" 
+                                    aria-label="Quantity of Gaming Keyboard">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="product-meta">
+                                <span class="item-title">Ergonomic Wireless Mouse</span>
+                                <span class="item-sku">SKU: MS-ERGO-02</span>
+                            </td>
+                            <td class="price">₹1,199</td>
+                            <td>
+                                <input 
+                                    class="qty-input"
+                                    type="number" 
+                                    name="qty_mouse" 
+                                    min="0" 
+                                    max="10" 
+                                    value="2" 
+                                    aria-label="Quantity of Wireless Mouse">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="product-meta">
+                                <span class="item-title">USB-C Fast Charging Cable (2m)</span>
+                                <span class="item-sku">SKU: CB-USBC-60W</span>
+                            </td>
+                            <td class="price">₹399</td>
+                            <td>
+                                <input 
+                                    class="qty-input"
+                                    type="number" 
+                                    name="qty_cable" 
+                                    min="0" 
+                                    max="15" 
+                                    value="1" 
+                                    aria-label="Quantity of USB-C Cable">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="cart-footer">
+                <!-- Links to checkout via button submission (or anchor tag) -->
+                <button type="submit" class="checkout-btn">
+                    Proceed to Checkout &rarr;
+                </button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
