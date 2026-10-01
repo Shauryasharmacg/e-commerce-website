@@ -1,0 +1,99 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Card</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .product-card {
+            background: white;
+            width: 320px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            margin: 12px 0;
+            font-size: 16px;
+        }
+
+        .total {
+            font-size: 20px;
+            font-weight: bold;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .buy-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            background: black;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .buy-button:hover {
+            background: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="product-card">
+
+        <h2>Wireless Headphones</h2>
+
+        <div class="details">
+            <strong>Initial Amount:</strong> ₹2,000
+        </div>
+
+        <div class="details">
+            <strong>Taxes:</strong> ₹360
+        </div>
+
+        <div class="details">
+            <strong>Discount:</strong> ₹200
+        </div>
+
+        <div class="details total">
+            Total Amount: ₹2,160
+        </div>
+
+        <button class="buy-button" onclick="buyProduct()">
+            Buy Now
+        </button>
+
+    </div>
+
+    <script>
+        function buyProduct() {
+            alert("Product added for purchase!");
+        }
+    </script>
+
+</body>
+</html>
+```
